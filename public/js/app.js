@@ -21,7 +21,6 @@ const elements = {
     // Form elements
     analyzeForm: document.getElementById('analyze-form'),
     repoUrlInput: document.getElementById('repo-url'),
-    githubTokenInput: document.getElementById('github-token'),
     analyzeBtn: document.getElementById('analyze-btn'),
     backBtn: document.getElementById('back-btn'),
 
@@ -119,7 +118,6 @@ async function handleAnalyzeSubmit(event) {
     if (isAnalyzing) return;
 
     const repoUrl = elements.repoUrlInput.value.trim();
-    const githubToken = elements.githubTokenInput.value.trim();
 
     // Validate URL
     if (!isValidGitHubUrl(repoUrl)) {
@@ -127,8 +125,8 @@ async function handleAnalyzeSubmit(event) {
         return;
     }
 
-    // Start analysis
-    await analyzeRepository(repoUrl, githubToken);
+    // Start analysis (token is handled server-side via .env)
+    await analyzeRepository(repoUrl);
 }
 
 /**
@@ -153,9 +151,8 @@ function handleRepoUrlInput() {
 /**
  * Send repository for analysis
  * @param {string} repoUrl - GitHub repository URL
- * @param {string} githubToken - Optional GitHub token
  */
-async function analyzeRepository(repoUrl, githubToken) {
+async function analyzeRepository(repoUrl) {
     isAnalyzing = true;
     showSection('loading');
     hideError();
@@ -186,8 +183,7 @@ async function analyzeRepository(repoUrl, githubToken) {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                repoUrl: repoUrl,
-                githubToken: githubToken || undefined
+                repoUrl: repoUrl
             })
         });
 

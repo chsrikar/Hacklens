@@ -142,18 +142,12 @@ router.post('/analyze', async (req, res) => {
 
 /**
  * GET /api/health
- * Health check endpoint - useful for deployment monitoring
+ * Health check endpoint
  */
 router.get('/health', (req, res) => {
     res.json({
         status: 'healthy',
         service: 'HackLens',
-        version: '1.0.0',
-        environment: process.env.NODE_ENV || 'development',
-        config: {
-            githubTokenConfigured: !!process.env.GITHUB_TOKEN,
-            openRouterConfigured: !!process.env.OPENROUTER_API_KEY
-        },
         timestamp: new Date().toISOString()
     });
 });
