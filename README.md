@@ -628,7 +628,7 @@ SOFTWARE.
 ---
 
 <p align="center">
-  <strong>Built with ❤️ for developers who value their time</strong>
+  <strong>Built By Chinthapenta Srikar</strong>
 </p>
 
 <p align="center">
