@@ -150,7 +150,7 @@ HackLens automates repository analysis and delivers professional, human-readable
 | API | Purpose | Required |
 |-----|---------|----------|
 | **GitHub REST API** | Repository data, commits, contributors | ✅ Yes |
-| **OpenRouter API** | AI-powered summary generation | ⚠️ Optional |
+| **OpenRouter API** | AI-powered summary generation | ✅ Yes |
 | **Notion API** | Project planning & intent context | ⚠️ Optional |
 
 ### AI Model
