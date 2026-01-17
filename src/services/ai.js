@@ -2,85 +2,120 @@
  * HackLens - AI Service
  * Handles OpenRouter API integration for generating summaries
  * 
- * STRICT OUTPUT RULES:
- * - DO NOT score contributors
- * - DO NOT rank contributors
- * - DO NOT judge code quality
- * - DO NOT guess missing data
- * - DO NOT repeat names
- * - DO NOT output raw GitHub stats without explanation
+ * OUTPUT QUALITY RULES:
+ * - Professional tone (senior technical analyst style)
+ * - No redundant system phrases
+ * - No placeholder language
+ * - No information repetition across sections
+ * - Polished, trustworthy output
  */
 
 const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
 
 /**
- * System prompt for the AI model - implements strict accuracy rules
+ * System prompt for the AI model - produces polished intelligence briefs
  */
-const SYSTEM_PROMPT = `You are HackLens, a GitHub development intelligence system.
+const SYSTEM_PROMPT = `You are a senior technical analyst writing repository intelligence briefs.
 
-Your job is to analyze GitHub repository data and generate an accurate, human-readable development summary for a team lead or authority.
-
-THIS IS NOT A SCORING OR JUDGING SYSTEM.
-Your role is to explain what happened during development.
+Your output is shown directly to team leads and decision-makers.
+Write as a professional analyst — NOT as an AI system.
 
 ========================
-STRICT OUTPUT RULES
+WRITING STYLE
 ========================
 
-- DO NOT score contributors
-- DO NOT rank contributors  
-- DO NOT judge code quality
-- DO NOT guess missing data
-- DO NOT repeat names
-- DO NOT output raw GitHub stats without explanation
+- Professional and neutral tone
+- Concise and informative
+- No system-like language ("I analyzed...", "Based on the data...")
+- No disclaimers or hedging
+- No meta-references ("Notion context included", "GitHub shows...")
+- Reads like a technical brief, not a chat response
 
 ========================
-ANALYSIS REQUIREMENTS
+MANDATORY TEXT RULES
 ========================
 
-A. Repository Purpose
-- Clearly explain what the repository is about
-- Use README + description + dominant folders
-- Do NOT describe only file paths without context
+1. REMOVE REDUNDANT PHRASES
+- Never write: "Notion context included: <title>"
+- Never write: "Project intent and planning from Notion"
+- Never write: "Based on the GitHub data..."
+- Never write: "The repository shows..."
 
-B. Contributor Intelligence (WHO)
-- Total contributors (must match provided count)
-- High-level contributor roles (e.g., backend-focused, infra, frontend)
-- Contribution patterns (sustained vs burst activity)
+2. CONTRIBUTOR WORDING
+- If bots were excluded: "X contributors" (state bot exclusion separately)
+- If bot count is 0: "X contributors"
+- Do NOT say "human contributors" unless specifically contrasting with bots
+- Neutral phrasing: "79 contributors" or "79 contributors (excluding automated accounts)"
 
-C. Change Mapping (WHERE)
-- Most changed folders and files
-- New vs modified files
-- Dominant areas of development
+3. NO INFORMATION REPETITION
+- Each section covers DISTINCT information
+- Do NOT repeat future plans in both Notion Summary AND Development Story
+- Do NOT repeat contributor counts in multiple sections
+- Mention roadmap/vision in Notion Summary ONLY
 
-D. Development Narrative (WHAT HAPPENED)
-- How the project evolved over time
-- Early scaffolding vs later refinement
-- Collaboration patterns
-- Maintenance vs feature expansion signals
+4. SECTION FOCUS
+- Repository Overview: What it is, who it's for
+- Notion Summary: Vision, intent, future direction (NOT activity)
+- Development Story: How it evolved, technical changes (NOT vision)
+- Contributors: Who contributed, focus areas
+- Code Changes: Where changes occurred
 
 ========================
 OUTPUT FORMAT
 ========================
 
-Return a valid JSON object with exactly these four fields:
-- repository_purpose: A clear 2-3 sentence explanation of what this project is about
-- contributors_summary: Who contributed and what areas they worked on (2-4 sentences, no duplicates)
-- change_summary: Where changes occurred in the codebase (2-4 sentences)
-- development_narrative: How the project evolved over time (3-5 sentences)
+Return a valid JSON object:
 
-Be factual, objective, and concise. Output must be readable in under 2 minutes.`;
+{
+  "repository_purpose": "2-3 sentences. What the project is. Primary goal. Target audience. High-level scope.",
+  
+  "notion_summary": "3-4 substantive sentences about project vision, design philosophy, or future direction from Notion. Must add value beyond GitHub data. null if no Notion provided.",
+  
+  "contributors_summary": "State contributor count once. Top 2-3 contributors with focus areas. Mention bot exclusion if applicable. No duplicate names.",
+  
+  "change_summary": "2-3 sentences. Most active areas. New vs modified files. Development concentration.",
+  
+  "development_narrative": "3-5 sentences. How the codebase evolved. Nature of changes (features, refactors, fixes). Collaboration patterns. Do NOT repeat vision/roadmap from Notion Summary."
+}
+
+========================
+FORBIDDEN OUTPUTS
+========================
+
+- "Notion context included"
+- "Project intent and planning from Notion"
+- "Based on the analysis..."
+- "The data shows..."
+- Repeating the same fact in multiple sections
+- Placeholder or generic descriptions
+- System-like language
+
+========================
+QUALITY CHECK
+========================
+
+Before outputting, verify:
+✓ No redundant phrases
+✓ No information repeated across sections
+✓ Notion Summary is substantive (not placeholder)
+✓ Development Story focuses on evolution, not vision
+✓ Professional analyst tone throughout
+✓ Readable in under 2 minutes`;
 
 /**
- * Builds the analysis prompt with repository data
+ * Builds the analysis prompt with repository data and optional Notion context
  * @param {Object} data - Structured GitHub data
+ * @param {Object} notionContext - Optional Notion context
  * @returns {string} - Formatted prompt
  */
-function buildAnalysisPrompt(data) {
+function buildAnalysisPrompt(data, notionContext = null) {
     const { rawData, repositoryOverview, contributors, changeSummary, bots } = data;
     
     // Build repository context
     const repoContext = `
+========================
+REPOSITORY METADATA
+========================
 Repository: ${rawData.repoInfo.owner}/${rawData.repoInfo.repo}
 Description: ${repositoryOverview?.description || 'No description provided'}
 Primary Language: ${repositoryOverview?.primaryLanguage || 'Not specified'}
@@ -92,7 +127,7 @@ README (first 500 chars):
 ${repositoryOverview?.readme?.substring(0, 500) || 'No README available'}
 `;
 
-    // Build contributor context (deduplicated by login)
+    // Build contributor context (deduplicated by login - AUTHORITATIVE)
     const seenLogins = new Set();
     const uniqueContributors = contributors.filter(c => {
         if (seenLogins.has(c.login)) return false;
@@ -100,21 +135,32 @@ ${repositoryOverview?.readme?.substring(0, 500) || 'No README available'}
         return true;
     });
 
-    const contributorContext = `
-Total Contributors (from GitHub API): ${rawData.totalContributors}
-Human Contributors: ${rawData.totalContributorsHuman}
-Bot Accounts Detected: ${rawData.totalBots}
-${bots?.length > 0 ? `Bots: ${bots.map(b => b.login).join(', ')}` : ''}
+    const humanCount = rawData.totalContributorsHuman;
+    const botCount = rawData.totalBots;
 
-Contributors (deduplicated by login):
+    const contributorContext = `
+========================
+CONTRIBUTOR DATA (AUTHORITATIVE - USE THESE EXACT COUNTS)
+========================
+HUMAN CONTRIBUTORS: ${humanCount} (use this exact number)
+BOT ACCOUNTS: ${botCount} (excluded from human count)
+${bots?.length > 0 ? `Bot names: ${bots.map(b => b.login).join(', ')} - mention these as "automated accounts" separately` : 'No bots detected'}
+
+HUMAN CONTRIBUTORS LIST (deduplicated by login - NO DUPLICATES ALLOWED):
 ${uniqueContributors.slice(0, 15).map(c => 
-    `- @${c.login} (${c.name}): ${c.contributions} contributions, areas: [${c.mainAreas?.join(', ') || 'various'}]`
+    `- @${c.login}: ${c.contributions} contributions, focus areas: [${c.mainAreas?.join(', ') || 'various'}]`
 ).join('\n')}
-${uniqueContributors.length > 15 ? `\n... and ${uniqueContributors.length - 15} more contributors` : ''}
+${uniqueContributors.length > 15 ? `\n... and ${uniqueContributors.length - 15} more human contributors` : ''}
+
+CRITICAL: You must state "${humanCount} human contributors" in your output.
+${botCount > 0 ? `CRITICAL: Mention that ${botCount} automated account(s) were excluded.` : ''}
 `;
 
     // Build change context
     const changeContext = `
+========================
+CODE CHANGE STATISTICS
+========================
 Total Commits: ${changeSummary.totalCommits}
 
 Most Changed Folders:
@@ -130,44 +176,85 @@ File Statistics:
 
     // Build recent commits context
     const commitsContext = `
-Recent Commit Messages (sample):
+========================
+RECENT COMMITS (Sample)
+========================
 ${rawData.recentCommits?.slice(0, 10).map(c => 
     `- "${c.message}" by @${c.author}`
 ).join('\n') || 'N/A'}
 `;
 
-    return `Analyze this GitHub repository data and generate a development summary.
+    // Build Notion context section (optional)
+    let notionSection = '';
+    if (notionContext && notionContext.enabled && notionContext.notion_summary) {
+        notionSection = `
+========================
+NOTION CONTENT (SOURCE OF TRUTH FOR INTENT)
+========================
+Page Title: ${notionContext.pageTitle || 'Unknown'}
+
+IMPORTANT: You MUST generate a meaningful notion_summary from this content.
+Do NOT just say "Notion context included" - actually summarize it.
+
+NOTION TEXT:
+${notionContext.notion_summary}
+
+REQUIRED: Generate 3-4 sentences explaining:
+- Project vision or goals
+- Design decisions or architecture notes
+- Future direction or priorities
+- Any context not obvious from GitHub
+
+========================
+END NOTION CONTENT
+========================
+`;
+    }
+
+    return `Generate a repository intelligence summary from this data.
 
 ${repoContext}
 ${contributorContext}
 ${changeContext}
 ${commitsContext}
+${notionSection}
+========================
+VALIDATION CHECKLIST
+========================
+- Human contributor count MUST be exactly: ${humanCount}
+- Bot accounts excluded: ${botCount}
+- NO duplicate contributor names allowed
+- NO bots in human contributor list
+${notionContext?.notion_summary ? '- notion_summary MUST contain actual content summary (NOT "Notion context included")' : '- notion_summary must be null (no Notion provided)'}
 
-IMPORTANT:
-- Contributor count MUST be ${rawData.totalContributors} (from GitHub API)
-- Do NOT duplicate any contributor names
-- Explain the repository purpose clearly
-- Focus on development progression, not judgments
-
-Generate a JSON response with repository_purpose, contributors_summary, change_summary, and development_narrative fields.`;
+Generate a JSON response with these exact fields:
+- repository_purpose
+- notion_summary (meaningful content or null)
+- contributors_summary (must state "${humanCount} human contributors")
+- change_summary
+- development_narrative`;
 }
 
 /**
  * Generates AI summary using OpenRouter API
  * @param {Object} githubData - Structured GitHub data
+ * @param {Object} notionContext - Optional Notion context
  * @returns {Promise<Object>} - AI-generated summary
  */
-async function generateSummary(githubData) {
+async function generateSummary(githubData, notionContext = null) {
     const apiKey = process.env.OPENROUTER_API_KEY;
 
     // If no API key, return a basic summary
     if (!apiKey) {
         console.log('[AI] No OpenRouter API key found, generating basic summary');
-        return generateBasicSummary(githubData);
+        return generateBasicSummary(githubData, notionContext);
     }
 
     try {
         console.log('[AI] Generating summary with OpenRouter...');
+        if (notionContext?.notion_summary) {
+            console.log('[AI] Including Notion context in analysis');
+        }
 
         const response = await fetch(OPENROUTER_API_URL, {
             method: 'POST',
@@ -181,7 +268,7 @@ async function generateSummary(githubData) {
                 model: 'openai/gpt-3.5-turbo',
                 messages: [
                     { role: 'system', content: SYSTEM_PROMPT },
-                    { role: 'user', content: buildAnalysisPrompt(githubData) }
+                    { role: 'user', content: buildAnalysisPrompt(githubData, notionContext) }
                 ],
                 temperature: 0.7,
                 max_tokens: 1500
@@ -205,17 +292,27 @@ async function generateSummary(githubData) {
         const aiResponse = parseAIResponse(content);
         
         console.log('[AI] Summary generated successfully');
-        return {
+        
+        // Build result with distinct Notion summary field
+        const summaryResult = {
             repositoryPurpose: aiResponse.repository_purpose || generateBasicPurpose(githubData),
+            notionSummary: aiResponse.notion_summary || null,
             contributorsSummary: aiResponse.contributors_summary || 'Unable to generate contributor summary.',
             changeSummary: aiResponse.change_summary || 'Unable to generate change summary.',
             developmentNarrative: aiResponse.development_narrative || 'Unable to generate development narrative.'
         };
+        
+        // Log if Notion summary was generated
+        if (summaryResult.notionSummary) {
+            console.log('[AI] Notion summary generated as distinct section');
+        }
+        
+        return summaryResult;
 
     } catch (error) {
         console.error('[AI] Error generating summary:', error);
         // Fall back to basic summary
-        return generateBasicSummary(githubData);
+        return generateBasicSummary(githubData, notionContext);
     }
 }
 
@@ -287,15 +384,30 @@ function generateBasicPurpose(githubData) {
 /**
  * Generates a basic summary without AI when API is unavailable
  * @param {Object} githubData - Structured GitHub data
+ * @param {Object} notionContext - Optional Notion context
  * @returns {Object} - Basic summary
  */
-function generateBasicSummary(githubData) {
+function generateBasicSummary(githubData, notionContext = null) {
     const { contributors, changeSummary, rawData, repositoryOverview, bots } = githubData;
 
-    // Generate repository purpose
+    // Generate repository purpose (from GitHub only)
     const repositoryPurpose = generateBasicPurpose(githubData);
+    
+    // Generate Notion summary as DISTINCT section (if available)
+    let notionSummary = null;
+    if (notionContext?.notion_summary) {
+        // Create a proper summary from Notion content, not just an excerpt
+        const notionContent = notionContext.notion_summary;
+        // Extract first meaningful paragraph or section
+        const lines = notionContent.split('\n').filter(line => line.trim().length > 0);
+        const summaryLines = lines.slice(0, 5).join(' ');
+        const maxLength = 500;
+        notionSummary = summaryLines.length > maxLength 
+            ? summaryLines.substring(0, maxLength) + '...'
+            : summaryLines;
+    }
 
-    // Generate contributor summary (deduplicated)
+    // Generate contributor summary (deduplicated, with proper bot handling)
     const seenLogins = new Set();
     const uniqueContributors = contributors.filter(c => {
         if (seenLogins.has(c.login)) return false;
@@ -303,17 +415,20 @@ function generateBasicSummary(githubData) {
         return true;
     });
 
-    const topContributors = uniqueContributors.slice(0, 3);
-    let contributorsSummary = `This repository has ${rawData.totalContributors} contributor(s)`;
+    const humanCount = rawData.totalContributorsHuman;
+    const botCount = rawData.totalBots;
     
-    if (bots?.length > 0) {
-        contributorsSummary += ` (${bots.length} bot account(s) excluded from this summary)`;
+    const topContributors = uniqueContributors.slice(0, 3);
+    let contributorsSummary = `This repository has ${humanCount} human contributor${humanCount !== 1 ? 's' : ''}`;
+    
+    if (botCount > 0) {
+        contributorsSummary += `. ${botCount} automated account${botCount !== 1 ? 's' : ''} (${bots.map(b => b.login).join(', ')}) ${botCount !== 1 ? 'were' : 'was'} excluded from this count`;
     }
     
     contributorsSummary += '. ';
     
     if (topContributors.length > 0) {
-        contributorsSummary += `Notable contributors include ${topContributors.map(c => 
+        contributorsSummary += `Top contributors include ${topContributors.map(c => 
             `@${c.login} (${c.contributions} contributions)`
         ).join(', ')}. `;
         
@@ -336,10 +451,9 @@ function generateBasicSummary(githubData) {
         `and ${changeSummary.deletedFiles} deleted files across ${changeSummary.totalCommits} commits.`;
 
     // Generate development narrative
-    const developerCount = uniqueContributors.length;
     const commitCount = rawData.totalCommits;
     
-    let developmentNarrative = `This ${repositoryOverview?.primaryLanguage || ''} project has been developed by ${developerCount} contributor(s) `;
+    let developmentNarrative = `This ${repositoryOverview?.primaryLanguage || ''} project has been developed by ${humanCount} human contributor${humanCount !== 1 ? 's' : ''} `;
     developmentNarrative += `over ${commitCount} commits. `;
     
     if (topFolders.length > 0) {
@@ -352,7 +466,7 @@ function generateBasicSummary(githubData) {
         developmentNarrative += 'The codebase shows ongoing maintenance and refinement patterns. ';
     }
     
-    if (developerCount > 3) {
+    if (humanCount > 3) {
         developmentNarrative += 'The project demonstrates collaborative development with multiple contributors.';
     } else {
         developmentNarrative += 'The project shows focused development with a small team.';
@@ -360,6 +474,7 @@ function generateBasicSummary(githubData) {
 
     return {
         repositoryPurpose,
+        notionSummary,
         contributorsSummary,
         changeSummary: changeSummaryText,
         developmentNarrative

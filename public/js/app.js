@@ -24,6 +24,11 @@ const elements = {
     analyzeBtn: document.getElementById('analyze-btn'),
     backBtn: document.getElementById('back-btn'),
 
+    // Notion elements
+    notionEnabled: document.getElementById('notion-enabled'),
+    notionFields: document.getElementById('notion-fields'),
+    notionPageId: document.getElementById('notion-page-id'),
+
     // Loading elements
     loadingStatus: document.getElementById('loading-status'),
     progressBar: document.getElementById('progress-bar'),
@@ -45,6 +50,11 @@ const elements = {
     repoContributorsCount: document.getElementById('repo-contributors-count'),
     repoTopics: document.getElementById('repo-topics'),
     validationBadge: document.getElementById('validation-badge'),
+    notionBadge: document.getElementById('notion-badge'),
+
+    // Notion Summary (DISTINCT SECTION)
+    notionSummaryCard: document.getElementById('notion-summary-card'),
+    notionSummaryText: document.getElementById('notion-summary-text'),
 
     // Results - AI Summary
     developmentNarrative: document.getElementById('development-narrative'),
@@ -91,6 +101,11 @@ function initEventListeners() {
 
     // Input validation
     elements.repoUrlInput.addEventListener('input', handleRepoUrlInput);
+
+    // Notion toggle
+    if (elements.notionEnabled) {
+        elements.notionEnabled.addEventListener('change', handleNotionToggle);
+    }
 }
 
 /**
@@ -144,6 +159,23 @@ function handleRepoUrlInput() {
     hideError();
 }
 
+/**
+ * Handle Notion integration toggle
+ */
+function handleNotionToggle() {
+    if (elements.notionEnabled && elements.notionFields) {
+        if (elements.notionEnabled.checked) {
+            elements.notionFields.classList.remove('hidden');
+        } else {
+            elements.notionFields.classList.add('hidden');
+            // Clear Notion page ID when disabled
+            if (elements.notionPageId) {
+                elements.notionPageId.value = '';
+            }
+        }
+    }
+}
+
 // ============================================
 // API Communication
 // ============================================
@@ -158,15 +190,29 @@ async function analyzeRepository(repoUrl) {
     hideError();
     setButtonLoading(true);
 
+    // Build request payload
+    const payload = {
+        repoUrl: repoUrl
+    };
+
+    // Add Notion configuration if enabled
+    if (elements.notionEnabled?.checked && elements.notionPageId?.value.trim()) {
+        payload.notion = {
+            enabled: true,
+            pageId: elements.notionPageId.value.trim()
+        };
+    }
+
     // Update loading status messages
     const statusMessages = [
         'Connecting to GitHub...',
         'Fetching commit history...',
         'Analyzing contributors...',
         'Processing file changes...',
+        payload.notion?.enabled ? 'Fetching Notion context...' : null,
         'Generating AI summary...',
         'Finalizing report...'
-    ];
+    ].filter(Boolean);
 
     let statusIndex = 0;
     const statusInterval = setInterval(() => {
@@ -182,9 +228,7 @@ async function analyzeRepository(repoUrl) {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
-                repoUrl: repoUrl
-            })
+            body: JSON.stringify(payload)
         });
 
         clearInterval(statusInterval);
@@ -252,6 +296,12 @@ function displayResults(data) {
 
     // Validation badge
     displayValidationStatus(data.validation);
+
+    // Notion context badge
+    displayNotionStatus(data.notionContext);
+
+    // Notion Summary (DISTINCT SECTION - only if actual content exists)
+    displayNotionSummary(data.aiSummary?.notionSummary);
 
     // AI Summary
     elements.developmentNarrative.textContent = data.aiSummary?.developmentNarrative || 'No narrative available.';
@@ -360,6 +410,57 @@ function displayValidationStatus(validation) {
         }
     } else {
         elements.validationBadge.classList.add('hidden');
+    }
+}
+
+/**
+ * Display Notion context status badge
+ * @param {Object} notionContext - Notion context data from response
+ */
+function displayNotionStatus(notionContext) {
+    if (!elements.notionBadge) return;
+
+    if (notionContext && notionContext.enabled) {
+        elements.notionBadge.classList.remove('hidden');
+        const notionText = elements.notionBadge.querySelector('.notion-text');
+        const notionIcon = elements.notionBadge.querySelector('.notion-icon');
+        
+        if (notionContext.hasContent && notionContext.pageTitle) {
+            // Success - Notion content was included
+            elements.notionBadge.classList.remove('notion-error');
+            if (notionIcon) notionIcon.textContent = '📝';
+            // Badge removed - Notion context shown in summary card only
+        } else if (notionContext.error) {
+            // Error - Notion was requested but failed
+            elements.notionBadge.classList.add('notion-error');
+            if (notionIcon) notionIcon.textContent = '⚠️';
+            if (notionText) notionText.textContent = `Notion: ${notionContext.error}`;
+        } else {
+            // Enabled but no content
+            elements.notionBadge.classList.add('notion-error');
+            if (notionIcon) notionIcon.textContent = 'ℹ️';
+            if (notionText) notionText.textContent = 'Notion enabled but no content available';
+        }
+    } else {
+        elements.notionBadge.classList.add('hidden');
+    }
+}
+
+/**
+ * Display Notion Summary as a DISTINCT section
+ * This shows the actual Notion content summary, not just a badge
+ * @param {string|null} notionSummary - The AI-generated Notion summary
+ */
+function displayNotionSummary(notionSummary) {
+    if (!elements.notionSummaryCard || !elements.notionSummaryText) return;
+
+    // Only show if there's actual Notion summary content
+    if (notionSummary && notionSummary.trim().length > 0) {
+        elements.notionSummaryText.textContent = notionSummary;
+        elements.notionSummaryCard.classList.remove('hidden');
+    } else {
+        elements.notionSummaryCard.classList.add('hidden');
+        elements.notionSummaryText.textContent = '';
     }
 }
 

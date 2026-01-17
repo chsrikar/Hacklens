@@ -13,6 +13,7 @@ const express = require('express');
 const router = express.Router();
 const githubService = require('../services/github');
 const aiService = require('../services/ai');
+const notionService = require('../services/notion');
 const { parseRepoUrl } = require('../utils/parser');
 
 /**
@@ -21,7 +22,7 @@ const { parseRepoUrl } = require('../utils/parser');
  */
 router.post('/analyze', async (req, res) => {
     try {
-        const { repoUrl, githubToken } = req.body;
+        const { repoUrl, githubToken, notion } = req.body;
 
         // Validate input
         if (!repoUrl) {
@@ -52,14 +53,26 @@ router.post('/analyze', async (req, res) => {
             token
         );
 
+        // Fetch Notion content (optional - won't fail if not configured)
+        let notionContext = { enabled: false, notion_summary: null };
+        if (notion && notion.enabled) {
+            console.log('[HackLens] Fetching Notion context...');
+            notionContext = await notionService.ingestNotionContent(notion);
+            if (notionContext.notion_summary) {
+                console.log(`[HackLens] Notion context loaded: ${notionContext.blockCount} blocks from "${notionContext.pageTitle}"`);
+            } else if (notionContext.error) {
+                console.log(`[HackLens] Notion skipped: ${notionContext.error}`);
+            }
+        }
+
         // Validate data integrity
         const validation = githubData.validation;
         if (!validation.contributorCountMatchesAPI || !validation.noDuplicateLogins) {
             console.warn('[HackLens] Data validation warning:', validation);
         }
 
-        // Generate AI summary
-        const aiSummary = await aiService.generateSummary(githubData);
+        // Generate AI summary (with optional Notion context)
+        const aiSummary = await aiService.generateSummary(githubData, notionContext);
 
         // Construct final response with repository overview
         const response = {
@@ -97,6 +110,14 @@ router.post('/analyze', async (req, res) => {
             
             // AI-generated summary
             aiSummary: aiSummary,
+            
+            // Notion context status (for frontend display)
+            notionContext: {
+                enabled: notionContext.enabled,
+                hasContent: !!notionContext.notion_summary,
+                pageTitle: notionContext.pageTitle || null,
+                error: notionContext.error || null
+            },
             
             // Validation status
             validation: {

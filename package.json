@@ -1,7 +1,7 @@
 {
   "name": "hacklens",
-  "version": "1.0.0",
-  "description": "Intelligence tool that analyzes GitHub repositories and generates human-readable development summaries",
+  "version": "1.1.0",
+  "description": "Intelligence tool that analyzes GitHub repositories and generates human-readable development summaries, with optional Notion context for project intent",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -9,10 +9,12 @@
   },
   "keywords": [
     "github",
+    "notion",
     "analytics",
     "development",
     "summary",
-    "ai"
+    "ai",
+    "intelligence"
   ],
   "author": "",
   "license": "MIT",

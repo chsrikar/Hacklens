@@ -42,6 +42,39 @@
                             <span class="input-hint">e.g., https://github.com/facebook/react</span>
                         </div>
 
+                        <!-- Notion Integration Section -->
+                        <div class="notion-section">
+                            <div class="form-group form-group-checkbox">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="notion-enabled" name="notionEnabled">
+                                    <span class="checkbox-custom"></span>
+                                    <span class="checkbox-text">Include Notion context <span class="optional">(optional)</span></span>
+                                </label>
+                                <span class="input-hint">Enrich analysis with project planning and intent from Notion</span>
+                            </div>
+
+                            <div id="notion-fields" class="notion-fields hidden">
+                                <div class="form-group">
+                                    <label for="notion-page-id">Notion Page URL or ID</label>
+                                    <input 
+                                        type="text" 
+                                        id="notion-page-id" 
+                                        name="notionPageId"
+                                        placeholder="https://notion.so/page-title-abc123... or page ID"
+                                        autocomplete="off"
+                                    >
+                                    <span class="input-hint">The Notion page containing project notes or planning</span>
+                                </div>
+                                <div class="notion-info">
+                                    <span class="info-icon">ℹ️</span>
+                                    <span class="info-text">
+                                        Notion content adds context about <strong>why</strong> decisions were made. 
+                                        GitHub remains the source of truth for <strong>what</strong> was built.
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
                         <button type="submit" class="btn btn-primary" id="analyze-btn">
                             <span class="btn-text">Analyze Repository</span>
                             <span class="btn-loader hidden">
@@ -137,6 +170,13 @@
                 <div id="validation-badge" class="validation-badge hidden">
                     <span class="validation-icon">⚠️</span>
                     <span class="validation-text">Data validation warning</span>
+                </div>
+
+                <!-- Notion Summary Card (DISTINCT SECTION) -->
+                <div id="notion-summary-card" class="summary-card notion-summary-card hidden">
+                    <h3>📝 Notion Summary</h3>
+                    <p class="notion-summary-subtitle">Project intent and planning from Notion</p>
+                    <p id="notion-summary-text" class="notion-summary-text"></p>
                 </div>
 
                 <!-- AI Summary Cards -->
