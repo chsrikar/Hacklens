@@ -1,636 +1,622 @@
-<p align="center">
-  <img src="https://img.shields.io/badge/HackLens-Intelligence%20Tool-6366f1?style=for-the-badge&logo=github&logoColor=white" alt="HackLens Badge"/>
-</p>
+# HackLens — Engineering Intelligence Platform
 
-<h1 align="center">🔍 HackLens</h1>
+> **Created by [Chinthapenta Srikar](https://github.com/chinthapenta)**  
+> _Core idea and architecture © 2026 Chinthapenta Srikar. All rights reserved._
 
-<p align="center">
-  <strong>GitHub Repository Intelligence Tool with AI-Powered Insights & Notion Integration</strong>
-</p>
+HackLens transforms raw GitHub development data into actionable insights for engineering leaders. It analyzes contributor patterns, code change focus areas, and development progression, then generates executive-ready intelligence reports using AI. Now with visual analytics, persistent history, and exportable PDF reports.
 
-<p align="center">
-  <a href="#-mission">Mission</a> •
-  <a href="#-the-problem">Problem</a> •
-  <a href="#-why-hacklens">Why HackLens</a> •
-  <a href="#-features">Features</a> •
-  <a href="#-quick-start">Quick Start</a> •
-  <a href="#-api-reference">API</a>
-</p>
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org)
+[![React](https://img.shields.io/badge/React-18-blue.svg)](https://reactjs.org)
+[![Made by Chinthapenta Srikar](https://img.shields.io/badge/Made%20by-Chinthapenta%20Srikar-orange.svg)](https://github.com/chinthapenta)
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Node.js-18+-339933?style=flat-square&logo=nodedotjs&logoColor=white" alt="Node.js"/>
-  <img src="https://img.shields.io/badge/Express-4.x-000000?style=flat-square&logo=express&logoColor=white" alt="Express"/>
-  <img src="https://img.shields.io/badge/AI-OpenRouter-7C3AED?style=flat-square&logo=openai&logoColor=white" alt="OpenRouter"/>
-  <img src="https://img.shields.io/badge/API-GitHub-181717?style=flat-square&logo=github&logoColor=white" alt="GitHub API"/>
-  <img src="https://img.shields.io/badge/API-Notion-000000?style=flat-square&logo=notion&logoColor=white" alt="Notion API"/>
-  <img src="https://img.shields.io/badge/License-MIT-green?style=flat-square" alt="MIT License"/>
-</p>
+## 📑 Table of Contents
 
----
+- [Current Features](#-current-features)
+- [Who Should Use HackLens](#-who-should-use-hacklens)
+- [Tech Stack](#-tech-stack)
+- [Architecture & How It Works](#-architecture--how-it-works)
+- [Workflow](#-workflow)
+- [Quick Start](#quick-start)
+- [Usage](#usage)
+- [API Reference](#api-reference)
+- [Database Setup](#database-setup-optional)
+- [Project Structure](#project-structure)
+- [Future Upgrades](#-future-upgrades)
+- [Notes](#notes)
+- [License](#license)
 
-## 🎯 Mission
+## ✨ Current Features
 
-**HackLens exists to transform raw repository data into decision-ready intelligence.**
+### Core Analytics
+- 📊 **Visual Analytics Dashboard** — Interactive commit timeline charts, contributor activity graphs, and folder change heatmaps using Recharts
+- 🤖 **AI-Powered Narratives** — Executive-ready intelligence reports generated using OpenRouter API (supports GPT-4, Claude, Gemini, and more)
+- 📈 **Contributor Intelligence** — Deep insights into contributor patterns, collaboration dynamics, and individual impact metrics
+- 🗂️ **Code Focus Areas** — Identify hotspots where development effort concentrates across folders and files
+- ⏱️ **Commit Timeline Analysis** — Track development velocity and activity patterns over time
 
-We believe team leads, managers, and stakeholders shouldn't need to dig through GitHub manually to understand:
-- *Who* contributed to a project
-- *What* changed and where
-- *How* the project evolved over time
-- *Why* certain decisions were made (via Notion integration)
+### Data & Export
+- 💾 **Persistent History** — PostgreSQL-backed storage for historical analysis tracking and trend comparison
+- 📄 **PDF Export** — Professional, server-rendered PDF reports via Puppeteer for stakeholder distribution
+- 📊 **Real-time Repository Metrics** — Stars, forks, language breakdown, and repository metadata aggregation
+- 🔄 **Comparative Analysis** — View historical trends and compare metrics across different time periods
 
-HackLens automates repository analysis and delivers professional, human-readable summaries in seconds — not hours.
+### Developer Experience
+- 🚀 **Zero-Config Start** — Works without database; optional PostgreSQL for enhanced features
+- 🔐 **Flexible Authentication** — Support for GitHub Personal Access Tokens with graceful fallback
+- ⚡ **Fast & Responsive** — Vite-powered frontend with hot module reloading
+- 🎨 **Modern UI/UX** — Built with UnoCSS for utility-first, responsive design
 
----
+## 👥 Who Should Use HackLens
 
-## 🔥 The Problem
+HackLens is designed for teams and individuals who need to understand development patterns and project health:
 
-### The Pain Points We Solve
+### Engineering Managers & Team Leads
+- Track team velocity and contribution patterns
+- Identify areas of concentrated development effort
+- Generate executive reports for stakeholder updates
+- Monitor codebase evolution and technical focus areas
 
-| Problem | Traditional Approach | HackLens Solution |
-|---------|---------------------|-------------------|
-| **Understanding a new codebase** | Manually browse commits, contributors, file structure | Instant AI-powered summary |
-| **Contributor visibility** | Click through profiles one by one | Aggregated overview with focus areas |
-| **Development activity tracking** | Scan commit history manually | Visual breakdown of changed folders |
-| **Project evolution** | Read through months of commits | AI-generated development narrative |
-| **Missing context** | No insight into "why" decisions were made | Notion integration for project intent |
-| **Hackathon judging** | Review each submission manually | Quick intelligence briefs per repo |
+### Open Source Maintainers
+- Understand contributor engagement and activity
+- Identify which parts of the project receive the most attention
+- Track project growth and community health metrics
+- Generate reports for funding applications or community updates
 
-### Who Benefits?
+### Technical Writers & Documentation Teams
+- Identify codebases that need documentation based on change frequency
+- Find high-activity areas that may need updated documentation
+- Track which components are actively developed vs. stable
 
-- **🧑‍💼 Team Leads** — Get instant visibility into team activity without micromanaging
-- **👩‍⚖️ Hackathon Judges** — Evaluate submissions fairly with standardized analysis
-- **🏢 Engineering Managers** — Understand project health across multiple repos
-- **🆕 New Team Members** — Onboard faster with project context
-- **📊 Stakeholders** — Stay informed without technical deep-dives
+### DevRel & Developer Advocates
+- Analyze community contribution patterns
+- Create compelling data-driven stories about project growth
+- Generate visual reports for blog posts and presentations
+- Track engagement metrics for developer communities
 
----
+### Product Managers
+- Understand where engineering effort is being spent
+- Validate technical roadmap alignment with actual development
+- Generate insights for quarterly business reviews
+- Track technical debt accumulation in specific modules
 
-## 💡 Why HackLens?
-
-### The HackLens Advantage
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                     TRADITIONAL WAY                             │
-│                                                                 │
-│   Open GitHub → Browse commits → Check contributors →           │
-│   Click profiles → Read commit messages → Open Notion →         │
-│   Cross-reference → Take notes → Compile summary                │
-│                                                                 │
-│   ⏱️ Time: 30-60 minutes per repository                        │
-└─────────────────────────────────────────────────────────────────┘
-
-                              VS
-
-┌─────────────────────────────────────────────────────────────────┐
-│                      HACKLENS WAY                               │
-│                                                                 │
-│   Paste URL → Click Analyze → Get Intelligence Brief            │
-│                                                                 │
-│   ⏱️ Time: 10-30 seconds                                       │
-└─────────────────────────────────────────────────────────────────┘
-```
-
-### Core Principles
-
-1. **🎯 Accuracy First** — Contributor counts match GitHub UI exactly
-2. **🤖 Bot-Aware** — Automated accounts are detected and excluded from human summaries
-3. **📊 No Duplicates** — Contributors are deduplicated by login (primary) and ID (secondary)
-4. **🔒 Secure by Design** — Tokens are never exposed to frontend; Notion content is never logged
-5. **⚡ Graceful Degradation** — Works without AI, without Notion, without GitHub token
-
----
-
-## ✨ Features
-
-### 🔍 Repository Analysis
-- **Repository Overview** — Name, description, language, topics, stars, forks
-- **Contributor Mapping** — Who worked on what, with focus areas
-- **Change Summary** — Most active folders, new/modified/deleted files
-- **Commit Intelligence** — Recent commits with author attribution
-
-### 🤖 AI-Powered Insights
-- **Repository Purpose** — What the project is and who it's for
-- **Development Narrative** — How the codebase evolved over time
-- **Contributors Summary** — Key contributors and their impact
-- **Change Analysis** — Where development effort concentrated
-
-### 📝 Notion Integration (Optional)
-- **Project Intent** — Understand *why* decisions were made
-- **Planning Context** — Roadmaps, goals, design decisions
-- **Vision Enrichment** — Future direction from documentation
-- **Secure Processing** — Token managed server-side only
-
-### ✅ Data Integrity
-- **Source of Truth** — GitHub Contributors API for accurate counts
-- **Deduplication** — No contributor appears twice
-- **Bot Detection** — `[bot]` accounts automatically filtered
-- **Validation** — Every response includes integrity checks
-
----
+### Individual Developers & Tech Leads
+- Audit repositories before joining a team or contributing
+- Understand project structure and active development areas
+- Benchmark your contributions against project norms
+- Identify opportunities to contribute to open source projects
 
 ## 🛠️ Tech Stack
 
-### Backend
-| Technology | Purpose |
-|------------|---------|
-| **Node.js 18+** | Runtime environment |
-| **Express.js 4.x** | HTTP server & routing |
-| **dotenv** | Environment configuration |
-| **cors** | Cross-origin resource sharing |
+### Frontend Layer
+| Technology | Purpose | Version |
+|-----------|---------|---------|
+| **React** | UI framework | 18.3+ |
+| **Vite** | Build tool & dev server | 6.0+ |
+| **UnoCSS** | Utility-first CSS framework | 0.65+ |
+| **Recharts** | Data visualization library | 2.15+ |
+| **React Router** | Client-side routing | 6.28+ |
+| **jsPDF** | Client-side PDF generation | 4.1+ |
+| **html2canvas** | DOM to canvas rendering | 1.4+ |
 
-### Frontend
-| Technology | Purpose |
-|------------|---------|
-| **HTML5** | Semantic structure |
-| **CSS3** | Custom properties, Grid, Flexbox |
-| **Vanilla JavaScript** | ES6+ with Fetch API |
+### Backend Layer
+| Technology | Purpose | Version |
+|-----------|---------|---------|
+| **Node.js** | Runtime environment | 18.0+ |
+| **Express** | Web framework | 4.21+ |
+| **CORS** | Cross-origin resource sharing | 2.8+ |
+| **dotenv** | Environment configuration | 16.4+ |
+| **UUID** | Unique identifier generation | 11.0+ |
 
-### External APIs & Integrations
-| API | Purpose | Required |
-|-----|---------|----------|
-| **GitHub REST API** | Repository data, commits, contributors | ✅ Yes |
-| **OpenRouter API** | AI-powered summary generation | ✅ Yes |
-| **Notion API** | Project planning & intent context | ⚠️ Optional |
+### External Services
+| Service | Purpose | Required |
+|---------|---------|----------|
+| **GitHub REST API** | Repository data fetching | Yes |
+| **OpenRouter API** | AI narrative generation | Optional |
+| **PostgreSQL** | Persistent data storage | Optional |
+| **Puppeteer** | Server-side PDF rendering | Optional |
 
-### AI Model
-- **Provider**: OpenRouter (unified AI gateway)
-- **Model**: `openai/gpt-3.5-turbo`
-- **Fallback**: Basic summary generation without AI
+### Development Tools
+- **Node Watch** — Hot reloading for backend development
+- **Vite HMR** — Hot module replacement for frontend
+- **ES Modules** — Modern JavaScript module system
 
----
+## 🏗️ Architecture & How It Works
 
-## 🚀 Quick Start
+### System Architecture
 
-### Prerequisites
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                        User Browser                              │
+│  ┌────────────────────────────────────────────────────────────┐ │
+│  │  React Frontend (Port 5173)                                │ │
+│  │  • Landing Page   • Dashboard   • History View             │ │
+│  │  • Charts (Recharts)   • PDF Generation (jsPDF)            │ │
+│  └───────────────────────┬────────────────────────────────────┘ │
+└────────────────────────────┬─────────────────────────────────────┘
+                             │ HTTP/REST API
+                             ▼
+         ┌───────────────────────────────────────────┐
+         │   Express Backend (Port 3001)             │
+         │  ┌─────────────────────────────────────┐  │
+         │  │  API Routes Layer                   │  │
+         │  │  • /api/analyze                     │  │
+         │  │  • /api/history/:owner/:repo        │  │
+         │  │  • /api/export-pdf                  │  │
+         │  │  • /api/health                      │  │
+         │  └──────────────┬──────────────────────┘  │
+         │                 ▼                          │
+         │  ┌─────────────────────────────────────┐  │
+         │  │  Services Layer                     │  │
+         │  │  ┌─────────────────────────────┐    │  │
+         │  │  │ GitHub Service              │    │  │
+         │  │  │ • Fetch commits, contributors│   │  │
+         │  │  │ • Repository metadata        │    │  │
+         │  │  └─────────────────────────────┘    │  │
+         │  │  ┌─────────────────────────────┐    │  │
+         │  │  │ Data Processor              │    │  │
+         │  │  │ • Parse & normalize data    │    │  │
+         │  │  │ • Calculate metrics         │    │  │
+         │  │  └─────────────────────────────┘    │  │
+         │  │  ┌─────────────────────────────┐    │  │
+         │  │  │ Aggregation Service         │    │  │
+         │  │  │ • Folder change analysis    │    │  │
+         │  │  │ • Timeline generation       │    │  │
+         │  │  └─────────────────────────────┘    │  │
+         │  │  ┌─────────────────────────────┐    │  │
+         │  │  │ AI Service                  │    │  │
+         │  │  │ • OpenRouter integration    │    │  │
+         │  │  │ • Narrative generation      │    │  │
+         │  │  └─────────────────────────────┘    │  │
+         │  │  ┌─────────────────────────────┐    │  │
+         │  │  │ Memory Service              │    │  │
+         │  │  │ • In-memory or DB storage   │    │  │
+         │  │  │ • Analysis history          │    │  │
+         │  │  └─────────────────────────────┘    │  │
+         │  └─────────────────────────────────────┘  │
+         └────┬──────────────────────────┬───────────┘
+              │                          │
+              ▼                          ▼
+    ┌──────────────────┐    ┌─────────────────────┐
+    │ GitHub REST API  │    │ OpenRouter API      │
+    │ • Commits        │    │ • GPT-4             │
+    │ • Contributors   │    │ • Claude            │
+    │ • Repository     │    │ • Gemini            │
+    └──────────────────┘    └─────────────────────┘
+              │
+              ▼
+    ┌──────────────────┐
+    │ PostgreSQL DB    │
+    │ (Optional)       │
+    │ • analyses       │
+    │ • repositories   │
+    └──────────────────┘
+```
 
-- **Node.js 18+** installed ([Download](https://nodejs.org/))
-- **OpenRouter API Key** for AI summaries ([Get one](https://openrouter.ai))
-- **GitHub Token** (optional, for private repos or higher rate limits)
-- **Notion Integration Token** (optional, for Notion context)
+### How It Works: Data Flow
 
-### Installation
+#### 1. **User Input Phase**
+```
+User enters repo URL → Frontend validates format → Sends to /api/analyze
+```
+
+#### 2. **Data Collection Phase**
+```
+Backend receives request
+    ↓
+GitHub Service fetches:
+    • Repository metadata (name, stars, forks, language)
+    • Commit history (messages, authors, timestamps, files changed)
+    • Contributor statistics (commits, additions, deletions)
+    ↓
+Data stored in memory/database
+```
+
+#### 3. **Processing Phase**
+```
+Data Processor normalizes raw GitHub data
+    ↓
+Aggregation Service computes:
+    • Folder-level change frequency
+    • Daily commit timeline
+    • Per-contributor activity metrics
+    • File change heatmap data
+    ↓
+Structured analytics ready for display
+```
+
+#### 4. **AI Enhancement Phase** (Optional)
+```
+AI Service sends structured data to OpenRouter
+    ↓
+AI generates four narratives:
+    • Development progression story
+    • Contributor dynamics analysis
+    • Code change focus summary
+    • Recent activity snapshot
+    ↓
+Narratives merged with analytics
+```
+
+#### 5. **Presentation Phase**
+```
+Complete analysis returned to frontend
+    ↓
+React components render:
+    • Interactive charts (Recharts)
+    • AI narratives (formatted text)
+    • Contributor cards
+    • Folder heatmap
+    ↓
+User can export to PDF or view in dashboard
+```
+
+#### 6. **Persistence Phase** (If database configured)
+```
+Analysis saved to PostgreSQL
+    ↓
+Accessible via /api/history endpoint
+    ↓
+Historical comparisons and trending available
+```
+
+### Key Design Principles
+
+- **Graceful Degradation**: Works without AI, database, or GitHub token with reduced functionality
+- **Separation of Concerns**: Routes → Services → Data layers cleanly separated
+- **Stateless API**: Each analysis is independent; state stored in database if configured
+- **Rate Limit Aware**: Respects GitHub API limits with intelligent request batching
+- **Async/Await**: Non-blocking operations throughout the stack
+
+## 🔄 Workflow
+
+### Typical User Journey
+
+```
+1. Landing Page
+   └─→ User enters GitHub repository URL
+       └─→ (Optional) Provides GitHub Personal Access Token
+           └─→ Click "Analyze Repository"
+
+2. Analysis Phase
+   └─→ Loading screen displays
+       └─→ Backend fetches data from GitHub API
+           └─→ Data processing & aggregation occurs
+               └─→ AI generates narratives (if configured)
+
+3. Dashboard Presentation
+   └─→ Interactive visualizations render:
+       ├─→ Commit Timeline Chart (activity over time)
+       ├─→ Contributor Activity Chart (top contributors)
+       ├─→ Folder Heatmap (change concentration)
+       └─→ AI Narratives (development insights)
+   └─→ User actions available:
+       ├─→ Download PDF report
+       ├─→ View detailed contributor stats
+       └─→ Navigate to History page
+
+4. History & Comparison
+   └─→ View all past analyses for repository
+       └─→ Compare metrics across different dates
+           └─→ Track trends and evolution
+```
+
+### Developer Workflow
+
+```
+Development → Build → Analysis → Export → Share
+    ↓          ↓        ↓         ↓        ↓
+  Code on    Watch    Generate  Create   Distribute
+  GitHub     changes  insights   PDF     to team
+```
+
+### Analysis Workflow (Technical)
+
+```mermaid
+graph TD
+    A[User Submits Repo URL] --> B{GitHub Token Provided?}
+    B -->|Yes| C[Use Authenticated API - 5000 req/hr]
+    B -->|No| D[Use Public API - 60 req/hr]
+    C --> E[Fetch Repository Metadata]
+    D --> E
+    E --> F[Fetch Commit History]
+    F --> G[Fetch Contributor Statistics]
+    G --> H[Process & Aggregate Data]
+    H --> I{AI Service Available?}
+    I -->|Yes| J[Generate AI Narratives]
+    I -->|No| K[Use Placeholder Text]
+    J --> L[Combine Data + Narratives]
+    K --> L
+    L --> M{Database Configured?}
+    M -->|Yes| N[Save to PostgreSQL]
+    M -->|No| O[Keep in Memory]
+    N --> P[Return Complete Analysis]
+    O --> P
+    P --> Q[Render Dashboard]
+    Q --> R{User Action}
+    R -->|Export| S[Generate PDF]
+    R -->|History| T[Fetch Past Analyses]
+    R -->|New Analysis| A
+```
+
+## Quick Start
+
+### 1. Clone & configure environment
 
 ```bash
-# 1. Clone the repository
-git clone https://github.com/your-username/hacklens.git
-cd hacklens
+cd backend
+cp .env.example .env
+```
 
-# 2. Install dependencies
+Edit `backend/.env` and add your API keys:
+
+```
+GITHUB_TOKEN=ghp_your_personal_access_token
+OPENROUTER_API_KEY=sk-or-v1-your_api_key
+PORT=3001
+DATABASE_URL=postgresql://user:password@localhost:5432/hacklens
+```
+
+- **GITHUB_TOKEN** — [Create a GitHub Personal Access Token](https://github.com/settings/tokens) with `repo` scope (read-only is fine). Without a token, you are limited to 60 API requests/hour.
+- **OPENROUTER_API_KEY** — [Get an OpenRouter key](https://openrouter.ai/keys) for AI narrative generation.
+- **DATABASE_URL** — Optional. PostgreSQL connection string for persistent analysis history. The app works fully without it.
+
+### 2. Install dependencies
+
+```bash
+# Backend
+cd backend
 npm install
 
-# 3. Configure environment
-cp .env.example .env
-# Edit .env with your API keys (see Environment Variables section)
+# Frontend
+cd ../frontend
+npm install
+```
 
-# 4. Start the server
-npm start
-# Or for development with auto-reload:
+### 3. Run the application
+
+Open two terminals:
+
+```bash
+# Terminal 1 — Backend
+cd backend
 npm run dev
+# Runs on http://localhost:3001
 
-# 5. Open in browser
-# http://localhost:8080
+# Terminal 2 — Frontend
+cd frontend
+npm run dev
+# Runs on http://localhost:5173
 ```
 
----
+Open [http://localhost:5173](http://localhost:5173) in your browser.
 
-## 📁 Project Structure
+## Usage
 
-```
-hacklens/
-├── 📄 server.js                 # Express server entry point
-├── 📄 package.json              # Dependencies & npm scripts
-├── 📄 .env                      # Environment variables (not committed)
-├── 📄 .env.example              # Environment template
-├── 📄 .gitignore                # Git ignore rules
-├── 📄 README.md                 # This file
-│
-├── 📂 public/                   # Frontend static files
-│   ├── 📄 index.html           # Main HTML page
-│   ├── 📂 css/
-│   │   └── 📄 styles.css       # Stylesheet with CSS custom properties
-│   └── 📂 js/
-│       └── 📄 app.js           # Frontend JavaScript (Fetch API)
-│
-└── 📂 src/                      # Backend source code
-    ├── 📂 routes/
-    │   └── 📄 analyze.js       # API route handlers (/api/analyze, /api/health)
-    │
-    ├── 📂 services/
-    │   ├── 📄 github.js        # GitHub API integration (538 lines)
-    │   │                        # - Repository metadata
-    │   │                        # - Contributors API (source of truth)
-    │   │                        # - Commit history with pagination
-    │   │                        # - Bot detection & deduplication
-    │   │
-    │   ├── 📄 ai.js            # OpenRouter AI integration (487 lines)
-    │   │                        # - Professional analyst prompts
-    │   │                        # - JSON response parsing
-    │   │                        # - Fallback basic summaries
-    │   │
-    │   └── 📄 notion.js        # Notion API integration (391 lines)
-    │                            # - Page content extraction
-    │                            # - Block parsing (headings, paragraphs, lists)
-    │                            # - URL/ID normalization
-    │
-    └── 📂 utils/
-        └── 📄 parser.js        # URL parsing utilities
-```
+1. Enter any public GitHub repository URL (e.g. `https://github.com/facebook/react`)
+2. Optionally paste a GitHub Personal Access Token for higher rate limits
+3. Click **Analyze Repository**
+4. View the dashboard with AI-generated narratives, interactive charts, contributor breakdown, folder heatmap, and activity snapshot
+5. Click **Download PDF** to export a professional report
+6. Click **History** to view past analyses and compare metrics
 
----
-
-## ⚙️ Environment Variables
-
-Create a `.env` file in the root directory:
-
-```env
-# Server Configuration
-PORT=8080
-
-# GitHub API (optional - for private repos or higher rate limits)
-GITHUB_TOKEN=ghp_your_github_personal_access_token
-
-# OpenRouter API (required for AI summaries)
-OPENROUTER_API_KEY=sk-or-v1-your_openrouter_api_key
-
-# Notion API (optional - for project context enrichment)
-NOTION_API_TOKEN=ntn_your_notion_integration_token
-```
-
-### Variable Details
-
-| Variable | Required | Default | Description |
-|----------|----------|---------|-------------|
-| `PORT` | No | `3000` | Server port |
-| `GITHUB_TOKEN` | No | — | GitHub PAT for private repos & 5000 req/hr rate limit |
-| `OPENROUTER_API_KEY` | No | — | Enables AI-powered summaries |
-| `NOTION_API_TOKEN` | No | — | Enables Notion context integration |
-
-### Getting API Keys
-
-<details>
-<summary><strong>🔑 GitHub Personal Access Token</strong></summary>
-
-1. Go to **GitHub Settings** → **Developer settings** → **Personal access tokens**
-2. Click **Generate new token (classic)**
-3. Select scopes:
-   - `repo` — For private repositories
-   - `public_repo` — For public repositories only
-4. Copy the token to your `.env` file
-</details>
-
-<details>
-<summary><strong>🔑 OpenRouter API Key</strong></summary>
-
-1. Sign up at [openrouter.ai](https://openrouter.ai)
-2. Navigate to **API Keys**
-3. Create a new key
-4. Copy to your `.env` file
-</details>
-
-<details>
-<summary><strong>🔑 Notion Integration Token</strong></summary>
-
-1. Go to [notion.so/my-integrations](https://www.notion.so/my-integrations)
-2. Click **New integration**
-3. Name it (e.g., "HackLens")
-4. Select your workspace
-5. Copy the **Internal Integration Token**
-6. **Important**: Share pages with your integration:
-   - Open the Notion page
-   - Click **...** → **Add connections** → Select your integration
-</details>
-
----
-
-## 📡 API Reference
+## API Reference
 
 ### `POST /api/analyze`
 
-Analyzes a GitHub repository and returns structured intelligence data.
-
 **Request:**
+
 ```json
 {
   "repoUrl": "https://github.com/owner/repo",
-  "githubToken": "optional_override_token",
-  "notion": {
-    "enabled": true,
-    "pageId": "notion-page-id-or-url"
-  }
+  "githubToken": "ghp_xxxxx"
 }
 ```
 
 **Response:**
+
 ```json
 {
-  "repository": {
-    "name": "repo",
-    "owner": "owner",
-    "fullName": "owner/repo",
-    "url": "https://github.com/owner/repo",
-    "description": "Repository description",
-    "primaryLanguage": "JavaScript",
-    "topics": ["nodejs", "api"],
+  "repoMetadata": {
+    "name": "repo-name",
+    "owner": "owner-name",
+    "description": "...",
     "stars": 1234,
     "forks": 56,
-    "createdAt": "2023-01-01T00:00:00Z",
-    "updatedAt": "2025-01-15T12:00:00Z"
+    "language": "JavaScript",
+    "createdAt": "2024-01-01T00:00:00Z",
+    "updatedAt": "2024-02-12T00:00:00Z"
   },
   "contributors": [
     {
-      "login": "contributor1",
-      "contributions": 150,
-      "mainAreas": ["src/api", "tests"]
+      "username": "user1",
+      "avatarUrl": "https://...",
+      "commits": 150,
+      "additions": 5000,
+      "deletions": 2000
     }
   ],
-  "bots": [
-    {
-      "login": "dependabot[bot]",
-      "contributions": 25
-    }
+  "folderChanges": {
+    "src/": 450,
+    "tests/": 120
+  },
+  "commitTimeline": [
+    { "date": "2026-01-01", "count": 4 },
+    { "date": "2026-01-02", "count": 7 }
   ],
-  "counts": {
-    "totalContributors": 15,
-    "humanContributors": 14,
-    "botAccounts": 1,
-    "totalCommits": 500
-  },
-  "changeSummary": {
-    "totalCommits": 500,
-    "mostChangedFolders": ["src/api", "src/services"],
-    "newFiles": 45,
-    "modifiedFiles": 120,
-    "deletedFiles": 12
-  },
+  "contributorActivity": [
+    { "username": "user1", "commits": 22 },
+    { "username": "user2", "commits": 4 }
+  ],
+  "folderHeatmap": [
+    { "folder": "src/components", "changes": 120 },
+    { "folder": "public/assets", "changes": 60 }
+  ],
   "aiSummary": {
-    "repositoryPurpose": "AI-generated project purpose...",
-    "notionSummary": "Context from Notion page...",
-    "contributorsSummary": "Key contributors overview...",
-    "changeSummary": "Development focus areas...",
-    "developmentNarrative": "How the project evolved..."
+    "developmentNarrative": "...",
+    "contributorsNarrative": "...",
+    "codeChangeSummary": "...",
+    "recentActivitySnapshot": "..."
   },
-  "notionContext": {
-    "enabled": true,
-    "hasContent": true,
-    "pageTitle": "Project Planning",
-    "error": null
-  },
-  "validation": {
-    "contributorCountMatchesAPI": true,
-    "noDuplicateContributors": true,
-    "hasRepositoryPurpose": true,
-    "isValid": true
-  },
-  "analyzedAt": "2025-01-17T12:00:00.000Z"
+  "analysisId": "uuid-if-database-configured"
 }
 ```
+
+### `GET /api/history/:owner/:repo`
+
+Returns all past analyses for a repository sorted by date, with comparison deltas.
+
+### `POST /api/export-pdf`
+
+**Request:**
+
+```json
+{
+  "analysisId": "uuid",
+  "analysisData": { }
+}
+```
+
+**Response:** `application/pdf` binary buffer.
 
 ### `GET /api/health`
 
-Health check endpoint for monitoring.
+Returns `{ "status": "ok", "service": "HackLens API", "database": "connected|not configured" }`.
 
-**Response:**
-```json
-{
-  "status": "healthy",
-  "service": "HackLens",
-  "timestamp": "2025-01-17T12:00:00.000Z"
-}
-```
+## Database Setup (Optional)
 
----
+HackLens works fully without a database. To enable persistent history:
 
-## 📋 Usage Notes
+1. Install PostgreSQL
+2. Create a database: `createdb hacklens`
+3. Set `DATABASE_URL` in `.env`
+4. Tables are auto-created on first server start
 
-### Rate Limits
+Manual schema: see `backend/src/db/migration.sql`
 
-| Configuration | GitHub Rate Limit |
-|--------------|-------------------|
-| No token | 60 requests/hour |
-| With token | 5,000 requests/hour |
-
-### Performance Optimizations
-
-- **Commit Sampling**: Repositories with 500+ commits are sampled for speed
-- **Parallel Requests**: Metadata, contributors, and commits fetched concurrently
-- **Content Truncation**: Notion content capped at 3,000 characters for AI context
-
-### Fallback Behavior
-
-| Missing Component | Behavior |
-|-------------------|----------|
-| No OpenRouter key | Basic summary generated (no AI) |
-| No Notion token | Analysis works without project context |
-| No GitHub token | Works for public repos (lower rate limit) |
-| Notion page not shared | Graceful error, analysis continues |
-
----
-
-## 📊 Data Source Philosophy
+## Project Structure
 
 ```
-┌──────────────────────────────────────────────────────────────────┐
-│                    DATA SOURCE HIERARCHY                         │
-├──────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│   ┌─────────────┐                     ┌─────────────┐           │
-│   │   GITHUB    │ ◄─── Source of ───► │   NOTION    │           │
-│   │             │      Truth for      │             │           │
-│   │  WHAT       │      Activity       │  WHY        │           │
-│   │  happened   │                     │  decisions  │           │
-│   │             │                     │  were made  │           │
-│   └─────────────┘                     └─────────────┘           │
-│        │                                    │                    │
-│        ▼                                    ▼                    │
-│   • Commits                           • Project vision           │
-│   • Contributors                      • Design decisions         │
-│   • File changes                      • Roadmap & goals          │
-│   • Repository metadata               • Planning context         │
-│                                                                  │
-└──────────────────────────────────────────────────────────────────┘
+hacklens/
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── charts/
+│   │   │   │   ├── CommitTimelineChart.jsx
+│   │   │   │   ├── ContributorActivityChart.jsx
+│   │   │   │   └── FolderHeatmapChart.jsx
+│   │   │   ├── RepoInputCard.jsx
+│   │   │   ├── LoadingScreen.jsx
+│   │   │   ├── ErrorBanner.jsx
+│   │   │   ├── NarrativeSection.jsx
+│   │   │   ├── ContributorsList.jsx
+│   │   │   ├── ActivitySnapshot.jsx
+│   │   │   └── FolderChangeHeatmap.jsx
+│   │   ├── pages/
+│   │   │   ├── Landing.jsx
+│   │   │   ├── Dashboard.jsx
+│   │   │   └── History.jsx
+│   │   ├── App.jsx
+│   │   └── main.jsx
+│   ├── uno.config.js
+│   ├── vite.config.js
+│   ├── index.html
+│   └── package.json
+│
+├── backend/
+│   ├── src/
+│   │   ├── db/
+│   │   │   └── migration.sql
+│   │   ├── routes/
+│   │   │   ├── analyze.js
+│   │   │   ├── history.js
+│   │   │   └── exportPdf.js
+│   │   ├── services/
+│   │   │   ├── githubService.js
+│   │   │   ├── aiService.js
+│   │   │   ├── dataProcessor.js
+│   │   │   ├── aggregationService.js
+│   │   │   ├── memoryService.js
+│   │   │   └── pdfService.js
+│   │   ├── utils/
+│   │   │   ├── validators.js
+│   │   │   └── errorHandler.js
+│   │   └── server.js
+│   ├── .env.example
+│   └── package.json
+│
+└── README.md
 ```
 
-### Golden Rules
+## 🚀 Future Upgrades
 
-1. **GitHub is always the source of truth** for development activity
-2. **Notion enriches but never overrides** GitHub data
-3. **Contributor counts must match** what GitHub UI shows
-4. **Missing Notion never breaks** the analysis
-5. **Bot accounts are always separated** from human contributors
+### Planned Enhancements
 
----
+#### Short-term (v2.0)
+- [ ] **Multi-Repository Comparison** — Side-by-side analysis of multiple repositories
+- [ ] **Real-time Webhooks** — Live updates when new commits are pushed
+- [ ] **Custom Date Ranges** — Analyze specific time periods instead of full history
+- [ ] **Export Formats** — Excel, CSV, and JSON data export options
+- [ ] **Dark Mode** — Theme toggle for better UX
+- [ ] **Advanced Filtering** — Filter by contributor, file type, or folder path
 
-## ❌ What This Tool Is NOT
+#### Mid-term (v2.5)
+- [ ] **Team Analytics** — Organization-level insights across multiple repositories
+- [ ] **Caching Layer** — Redis integration for faster repeated analyses
+- [ ] **Code Quality Metrics** — Integration with SonarQube, CodeClimate
+- [ ] **Pull Request Analytics** — Review time, approval patterns, merge statistics
+- [ ] **Issue Correlation** — Link commits to issues and track resolution patterns
+- [ ] **Custom AI Models** — Support for local LLMs (Ollama, LM Studio)
+- [ ] **Slack/Discord Integration** — Automated report delivery to channels
+- [ ] **Email Reports** — Scheduled analysis reports via email
 
-| ❌ NOT This | ✅ What It Actually Is |
-|-------------|----------------------|
-| Performance scoring system | Intelligence aggregation tool |
-| Contributor ranking tool | Neutral activity visualization |
-| Code quality analyzer | Development pattern observer |
-| Project management tool | Read-only analysis utility |
-| CI/CD integration | On-demand analysis service |
-| Real-time monitoring | Point-in-time snapshots |
-| Code review system | High-level overview generator |
+#### Long-term (v3.0)
+- [ ] **Predictive Analytics** — Forecast technical debt and maintenance needs using ML
+- [ ] **Security Analysis** — Vulnerability detection and secret scanning integration
+- [ ] **CI/CD Integration** — Automated analysis on deployment pipelines
+- [ ] **Custom Dashboards** — User-configurable widgets and metrics
+- [ ] **API Rate Optimization** — GraphQL integration for more efficient GitHub queries
+- [ ] **Multi-Language Support** — I18n for global teams
+- [ ] **Mobile App** — Native iOS/Android applications
+- [ ] **Plugin System** — Extensible architecture for custom analyzers
+- [ ] **Collaboration Features** — Comments, annotations, and shared insights
+- [ ] **Advanced AI Insights** — Code smell detection, refactoring suggestions
 
----
+### Community Contributions Welcome
 
-## 🎯 Success Criteria
+We welcome contributions in the following areas:
+- 🐛 Bug fixes and stability improvements
+- 📝 Documentation enhancements
+- 🎨 UI/UX improvements
+- 🔧 New data aggregation algorithms
+- 🤖 Additional AI model integrations
+- 🌐 Internationalization
+- 🧪 Test coverage expansion
 
-HackLens succeeds when a team lead can answer these questions **without opening GitHub**:
+See our [Contributing Guidelines](#) (coming soon) for more details.
 
-| Question | How HackLens Answers |
-|----------|---------------------|
-| Who worked on this project? | Contributors list with focus areas |
-| What was the development focus? | Most changed folders & file stats |
-| How did the project evolve? | AI-generated development narrative |
-| What is this project for? | Repository purpose summary |
-| Why were these decisions made? | Notion context integration |
+## Notes
 
-**Target**: Complete repository intelligence in **under 30 seconds**.
-
----
-
-## 🔮 Future Upgrade Ideas
-
-### Short-Term Roadmap
-- [ ] **Multi-repository comparison** — Analyze multiple repos side-by-side
-- [ ] **Export to PDF/Markdown** — Generate shareable reports
-- [ ] **Caching layer** — Redis/in-memory cache for repeated analyses
-- [ ] **Webhook support** — Trigger analysis on push events
-- [ ] **Dark/Light theme toggle** — User preference for UI
-
-### Medium-Term Vision
-- [ ] **Team analytics** — Aggregate insights across organization repos
-- [ ] **Historical trends** — Track development patterns over time
-- [ ] **Slack/Discord integration** — Post summaries to team channels
-- [ ] **Custom AI prompts** — User-defined analysis focus areas
-- [ ] **Multiple AI model support** — GPT-4, Claude, Llama options
-
-### Long-Term Goals
-- [ ] **Organization-wide dashboard** — SaaS-ready multi-tenant support
-- [ ] **GitHub App integration** — One-click installation for orgs
-- [ ] **Jira/Linear integration** — Link issues to development activity
-- [ ] **Machine learning insights** — Predict development bottlenecks
-- [ ] **API rate limit pooling** — Multiple token rotation
-
----
-
-## 🏆 Key Developments
-
-### Version 1.1.0 (Current)
-- ✅ **Notion Integration** — Full page content extraction with block parsing
-- ✅ **Enhanced AI Prompts** — Professional analyst tone, no system phrases
-- ✅ **Bot Detection** — Automatic `[bot]` account filtering
-- ✅ **Data Validation** — Contributor count verification against GitHub API
-- ✅ **Deduplication Engine** — Login-based + ID-based contributor merging
-
-### Version 1.0.0
-- ✅ Core GitHub analysis
-- ✅ OpenRouter AI integration
-- ✅ Basic frontend UI
-- ✅ Express.js backend
-
----
-
-## 🔒 Security Considerations
-
-| Concern | Mitigation |
-|---------|------------|
-| Token exposure | API tokens stored server-side only, never sent to frontend |
-| Notion content logging | Raw Notion content is never logged |
-| GitHub token in requests | Frontend token is optional override, environment token preferred |
-| Rate limit abuse | Graceful error handling with user feedback |
-| API key in source control | `.env` file gitignored, `.env.example` provided |
-
----
-
-## 🧪 Testing
-
-### Manual Testing
-
-```bash
-# Health check
-curl http://localhost:8080/api/health
-
-# Analyze public repository
-curl -X POST http://localhost:8080/api/analyze \
-  -H "Content-Type: application/json" \
-  -d '{"repoUrl": "https://github.com/expressjs/express"}'
-
-# Analyze with Notion context
-curl -X POST http://localhost:8080/api/analyze \
-  -H "Content-Type: application/json" \
-  -d '{
-    "repoUrl": "https://github.com/your/repo",
-    "notion": {
-      "enabled": true,
-      "pageId": "your-notion-page-id"
-    }
-  }'
-```
-
-### Expected Validation Results
-
-```json
-{
-  "validation": {
-    "contributorCountMatchesAPI": true,
-    "noDuplicateContributors": true,
-    "hasRepositoryPurpose": true,
-    "isValid": true
-  }
-}
-```
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
----
+- **No code quality scoring** — HackLens focuses on patterns and activity, not judgments
+- **AI graceful fallback** — If the OpenRouter API is unavailable, the dashboard still renders all data with placeholder text
+- **Database optional** — The app functions fully without PostgreSQL; history and persistence are additive features
+- The frontend proxies `/api` requests to the backend in development via Vite config
+- GitHub API is limited to 60 req/hour without a token; 5,000 req/hour with one
 
 ## 📄 License
 
-This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
-
-```
 MIT License
 
-Copyright (c) 2025 HackLens
+**Copyright © 2026 Chinthapenta Srikar**
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+The core idea, concept, and architecture of HackLens are the intellectual property of **Chinthapenta Srikar**.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-```
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ---
 
-<p align="center">
-  <strong>Built By Chinthapenta Srikar</strong>
-</p>
-
-<p align="center">
-  <a href="#-hacklens">Back to Top ↑</a>
-</p>
+**Made by [Chinthapenta Srikar](https://github.com/chinthapenta)**
